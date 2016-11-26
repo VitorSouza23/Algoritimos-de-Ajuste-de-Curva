@@ -7,6 +7,7 @@ package br.edu.ifsc.principal;
 
 import br.edu.ifsc.ajustedecurva.AjusteLinear;
 import br.edu.ifsc.ajustedecurva.AjusteLinearMultiplo;
+import br.edu.ifsc.ajustedecurva.AjustePolinomial;
 
 /**
  *
@@ -15,6 +16,9 @@ import br.edu.ifsc.ajustedecurva.AjusteLinearMultiplo;
 public class Principal {
     public static void main(String[] args) {
         //AjusteLinear.calcularD();
-        AjusteLinearMultiplo.calcularVetorBeta();
+        //AjusteLinearMultiplo.calcularVetorBeta();
+        //AjusteLinearMultiplo.calcularYcomAjusteDeCurva(1);
+        AjustePolinomial.calcularVetorBeta();
+        AjustePolinomial.calcularYcomAjusteDeCurva(1);
     }
 }

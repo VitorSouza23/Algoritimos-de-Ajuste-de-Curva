@@ -7,14 +7,13 @@ package br.edu.ifsc.ajustedecurva;
 
 import br.edu.ifsc.sistemaslineares.exatos.EliminacaoGaussiana;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
  *
  * @author Vitor
  */
-public class AjusteLinearMultiplo {
+public class AjustePolinomial {
 
     private static BigDecimal matXi[][];
     private static BigDecimal vetYi[];
@@ -34,7 +33,6 @@ public class AjusteLinearMultiplo {
 
         matXi = new BigDecimal[matx.length][matx[0].length];
         vetYi = new BigDecimal[vety.length];
-        
 
         for (int l = 0; l < matXi.length; l++) {
             for (int c = 0; c < matXi[0].length; c++) {
@@ -55,49 +53,26 @@ public class AjusteLinearMultiplo {
 
     private static void calcularB() {
         int n = matXi[0].length;
-        BigDecimal somaXiYi;
-        BigDecimal somaXi;
-        BigDecimal somaXi2;
-        BigDecimal somaXiXi;
+        BigDecimal somaXiP;
         BigDecimal somaYi;
+        BigDecimal somaXiPYi;
         BigDecimal matRes[][] = new BigDecimal[matXi.length + 1][matXi.length + 1];
         BigDecimal N = new BigDecimal(n).setScale(CASA_DECIMAL, ROUND_MODE);
 
         for (int lr = 0; lr < matRes.length; lr++) {
             for (int cr = 0; cr < matRes[0].length; cr++) {
-                if (lr == 0 && cr == 0) {
-                    matRes[0][0] = N;
-                } else if (lr == 0) {
-                    somaXi = BigDecimal.ZERO;
-                    for (int c = 0; c < matXi[0].length; c++) {
-                        somaXi = somaXi.add(matXi[cr - 1][c]).setScale(CASA_DECIMAL, ROUND_MODE);
-                        System.out.println("\n");
-                        System.out.println("x[" + (cr - 1) + "][" + c + "] = " + matXi[cr - 1][c].setScale(CASA_DECIMAL, ROUND_MODE));
-                        System.out.println("Soma x[" + (cr - 1) + "] = " + somaXi);
-                    }
-                    matRes[lr][cr] = somaXi;
-                    System.out.println("====================");
-                } else if (lr == cr) {
-                    somaXi2 = BigDecimal.ZERO;
-                    for (int c = 0; c < matXi[0].length; c++) {
-                        somaXi2 = somaXi2.add(matXi[cr - 1][c].pow(2)).setScale(CASA_DECIMAL, ROUND_MODE);
-                        System.out.println("\n");
-                        System.out.println("x[" + (cr - 1) + "][" + c + "] ^ 2 = " + matXi[cr - 1][c].pow(2).setScale(CASA_DECIMAL, ROUND_MODE));
-                        System.out.println("Soma x[" + (cr - 1) + "] ^ 2 = " + somaXi2);
-                    }
-                    matRes[lr][cr] = somaXi2;
-                    System.out.println("====================");
-                } else if (lr < cr) {
-                    somaXiXi = BigDecimal.ZERO;
-                    for (int c = 0; c < matXi[0].length; c++) {
-                        somaXiXi = somaXiXi.add(matXi[lr - 1][c].multiply(matXi[cr - 1][c])).setScale(CASA_DECIMAL, ROUND_MODE);
-                        System.out.println("\n");
-                        System.out.println("x[" + (lr - 1) + "][" + c + "] = " + (matXi[lr - 1][c]));
-                        System.out.println("x[" + (cr - 1) + "][" + c + "] = " + (matXi[cr - 1][c]));
-                        System.out.println("x[" + (lr - 1) + "][" + c + "] * x[" + (cr - 1) + "][" + c + "] = " + matXi[lr - 1][c].multiply(matXi[cr - 1][c]).setScale(CASA_DECIMAL, ROUND_MODE));
-                        System.out.println("Soma x[" + (lr - 1) + "] * x[" + (cr - 1) + "] = " + somaXiXi);
-                    }
-                    matRes[lr][cr] = somaXiXi;
+                if(lr == 0 && cr == 0){
+                    matRes[lr][cr] = N;
+                }else if (lr <= cr) {
+                    somaXiP = BigDecimal.ZERO;
+                        for (int c = 0; c < matXi[0].length; c++) {
+                            somaXiP = somaXiP.add((matXi[cr -1 ][c].pow(cr))).setScale(CASA_DECIMAL, ROUND_MODE);
+                            System.out.println("\n");
+                            System.out.println("x[" + (cr - 1)  + "][" + c + "] = " + (matXi[cr - 1][c]).setScale(CASA_DECIMAL, ROUND_MODE));
+                            System.out.println("x[" + (cr - 1) + "][" + c + "] ^ (" + cr + ") = " + (matXi[cr - 1][c]).pow(cr).setScale(CASA_DECIMAL, ROUND_MODE));
+                            System.out.println("Soma x[" + (cr - 1 ) + "] ^ (" + cr +") = " + somaXiP);
+                        }
+                    matRes[lr][cr] = somaXiP;
                     System.out.println("====================");
                 }
 
@@ -135,20 +110,20 @@ public class AjusteLinearMultiplo {
         vetSomaYiXi = new BigDecimal[matXi.length + 1];
         vetSomaYiXi[0] = somaYi;
 
-        somaXiYi = BigDecimal.ZERO;
-        System.out.println("Somatório XiYi:");
+        somaXiPYi = BigDecimal.ZERO;
+        System.out.println("Somatório Xi^(P) * Yi:");
         for (int l = 0; l < matXi.length; l++) {
             for (int c = 0; c < matXi[0].length; c++) {
-                somaXiYi = somaXiYi.add(matXi[l][c].multiply(vetYi[c])).setScale(CASA_DECIMAL, ROUND_MODE);
+                somaXiPYi = somaXiPYi.add(matXi[l][c].multiply(vetYi[c])).setScale(CASA_DECIMAL, ROUND_MODE);
                 System.out.println("\n");
                 System.out.println("x[" + l + "][" + c + "] = " + matXi[l][c]);
                 System.out.println("y[" + c + "] = " + vetYi[c]);
                 System.out.println("x[" + l + "][" + c + "] * y[" + c + "] = " + matXi[l][c].multiply(vetYi[c]).setScale(CASA_DECIMAL, ROUND_MODE));
-                System.out.println("Soma x[" + l + "] * y[" + c + "] = " + somaXiYi);
+                System.out.println("Soma x[" + l + "] * y[" + c + "] = " + somaXiPYi);
 
             }
-            vetSomaYiXi[l + 1] = somaXiYi;
-            somaXiYi = BigDecimal.ZERO;
+            vetSomaYiXi[l + 1] = somaXiPYi;
+            somaXiPYi = BigDecimal.ZERO;
             System.out.println("====================");
         }
 
@@ -185,11 +160,11 @@ public class AjusteLinearMultiplo {
         System.out.println("==================================================================================");
         System.out.println("Ajuste de Curva:");
         for (int x = 0; x < vetB.length; x++) {
-            System.out.print("+ (" + vetB[x] + ") * x[" + x + "] ");
+            System.out.print("+ (" + vetB[x] + ") * x[" + x + "] ^(" + x + ") ");
         }
         System.out.println("");
         System.out.println("==================================================================================");
-        
+
     }
 
     public static void calcularCoeficienteDeDeterminacao() {
@@ -217,33 +192,33 @@ public class AjusteLinearMultiplo {
         System.out.println("\n");
         System.out.println("===============================================");
         System.out.println("Vetor ^Yi:");
-        for(int x = 0; x < vetRi.length; x++){
-            System.out.println("^y["+ x +"] = " + vetRi[x]);
+        for (int x = 0; x < vetRi.length; x++) {
+            System.out.println("^y[" + x + "] = " + vetRi[x]);
         }
-        
+
         System.out.println("===============================================");
         System.out.println("\n");
-        
+
         somaYiRi2 = BigDecimal.ZERO;
         System.out.println("Somatório (Yi - ^Yi) ^ 2:");
-        for(int x = 0; x < vetYi.length; x++){
+        for (int x = 0; x < vetYi.length; x++) {
             somaYiRi2 = somaYiRi2.add((vetYi[x].subtract(vetRi[x])).pow(2).setScale(CASA_DECIMAL, ROUND_MODE));
-            System.out.println("(y[" + x + "] -  ^y["+ x+"])^2 = " + (vetYi[x].subtract(vetRi[x])).pow(2).setScale(CASA_DECIMAL, ROUND_MODE));
+            System.out.println("(y[" + x + "] -  ^y[" + x + "])^2 = " + (vetYi[x].subtract(vetRi[x])).pow(2).setScale(CASA_DECIMAL, ROUND_MODE));
         }
         System.out.println("Somatório (Yi - ^Yi) ^ 2 = " + somaYiRi2);
         System.out.println("===============================================");
         System.out.println("\n");
-        
+
         somaYi2 = BigDecimal.ZERO;
-         System.out.println("Somatório (Yi)^2:");
-        for(int x = 0; x < vetYi.length; x++){
+        System.out.println("Somatório (Yi)^2:");
+        for (int x = 0; x < vetYi.length; x++) {
             somaYi2 = somaYi2.add((vetYi[x].pow(2)).setScale(CASA_DECIMAL, ROUND_MODE));
             System.out.println("(y[" + x + "])^2 = " + (vetYi[x].pow(2).setScale(CASA_DECIMAL, ROUND_MODE)));
         }
         System.out.println("Somatório (Yi) ^ 2 = " + somaYiRi2);
         System.out.println("===============================================");
         System.out.println("\n");
-        
+
         somaYi = BigDecimal.ZERO;
         System.out.println("Somatário Yi:");
         for (int x = 0; x < vetYi.length; x++) {
@@ -253,22 +228,22 @@ public class AjusteLinearMultiplo {
         System.out.println("Somatório y: " + somaYi);
         System.out.println("===================================================================");
         System.out.println("\n");
-        
+
         System.out.println("Coeficiente de Determinação:");
         BigDecimal coeficiente = BigDecimal.ONE.
                 subtract(somaYiRi2.divide(somaYi2.
-                        subtract(somaYi.pow(2).divide(N, CASA_DECIMAL_DIVISOR, ROUND_MODE)),
-                        CASA_DECIMAL_DIVISOR, ROUND_MODE));
+                                subtract(somaYi.pow(2).divide(N, CASA_DECIMAL_DIVISOR, ROUND_MODE)),
+                                CASA_DECIMAL_DIVISOR, ROUND_MODE));
         System.out.println("R^2 = " + coeficiente);
     }
     
     public static void calcularYcomAjusteDeCurva(double valor){
         BigDecimal bigValor = new BigDecimal(Double.toString(valor));
-        BigDecimal resultado = BigDecimal.ZERO;
         System.out.println("\n");
         System.out.println("Resultado do calculo para x = " + bigValor + ":");
+        BigDecimal resultado = BigDecimal.ZERO;
          for (int x = 0; x < vetB.length; x++) {
-            System.out.print("+ (" + vetB[x] + ") * " + bigValor + " ");
+            System.out.print("+ (" + vetB[x] + ") * " + bigValor + " ^(" + x + ") ");
             resultado = resultado.add(vetB[x].multiply(bigValor.pow(x))).setScale(CASA_DECIMAL, ROUND_MODE);
         }
         System.out.println("= " + resultado);
