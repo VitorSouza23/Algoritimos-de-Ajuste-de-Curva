@@ -16,9 +16,10 @@ import br.edu.ifsc.ajustedecurva.AjustePolinomial;
 public class Principal {
     public static void main(String[] args) {
         //AjusteLinear.calcularD();
+        //AjusteLinear.calcularYAtravesDeAjuste(175);
         //AjusteLinearMultiplo.calcularVetorBeta();
         //AjusteLinearMultiplo.calcularYcomAjusteDeCurva(1);
-        AjustePolinomial.calcularVetorBeta();
-        AjustePolinomial.calcularYcomAjusteDeCurva(1);
+        AjustePolinomial.calcularVetorBeta(3);
+        //AjustePolinomial.calcularYcomAjusteDeCurva(1);
     }
 }

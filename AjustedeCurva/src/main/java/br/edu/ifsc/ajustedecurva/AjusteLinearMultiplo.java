@@ -27,10 +27,10 @@ public class AjusteLinearMultiplo {
 
     private static void criarVetoresBigDecimal() {
         double matx[][] = {
-            {-1, 0, 1, 2, 4, 5, 5, 6},
-            {-2, -1, 0, 1, 1, 2, 3, 4}
+            {-5,-3,-1,0,1,3,4},
+            {0,0.2,0.3,0.5,0.6,0.8,1}
         };
-        double vety[] = {13, 11, 9, 4, 11, 9, 1, -1};
+        double vety[] = {5.1,6.3,7.4,8.9,9.5,10.7,11.5};
 
         matXi = new BigDecimal[matx.length][matx[0].length];
         vetYi = new BigDecimal[vety.length];
@@ -205,6 +205,7 @@ public class AjusteLinearMultiplo {
             for (int l = 0; l < matXi.length; l++) {
                 somaRi = somaRi.add(vetB[l + 1].multiply(matXi[l][c])).setScale(CASA_DECIMAL, ROUND_MODE);
                 System.out.println("\n");
+                System.out.println("B[" + (0) + "] = " + vetB[0]);
                 System.out.println("B[" + (l + 1) + "] = " + vetB[l + 1]);
                 System.out.println("x[" + l + "][" + c + "] = " + matXi[l][c]);
                 System.out.println("B[" + (l + 1) + "] * x[" + l + "][" + c + "] = " + vetB[l + 1].multiply(matXi[l][c]).setScale(CASA_DECIMAL, ROUND_MODE));
@@ -240,7 +241,7 @@ public class AjusteLinearMultiplo {
             somaYi2 = somaYi2.add((vetYi[x].pow(2)).setScale(CASA_DECIMAL, ROUND_MODE));
             System.out.println("(y[" + x + "])^2 = " + (vetYi[x].pow(2).setScale(CASA_DECIMAL, ROUND_MODE)));
         }
-        System.out.println("Somatório (Yi) ^ 2 = " + somaYiRi2);
+        System.out.println("Somatório (Yi) ^ 2 = " + somaYi2);
         System.out.println("===============================================");
         System.out.println("\n");
         

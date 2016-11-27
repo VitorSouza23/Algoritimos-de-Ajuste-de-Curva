@@ -23,8 +23,8 @@ public class AjusteLinear {
     private static final int CASA_DECIMAL_DIVISOR = 15;
     
     private static void criarVetoresBigDecimal(){
-        double vetx[] = {1872, 1890, 1900, 1920, 1940, 1950, 1960,1970, 1980,1991};
-        double vety[] = {9.9, 14.3, 17.4, 30.6, 41.2, 51.9,70.2,93.1,119.0, 146.2};
+        double vetx[] = {183,173,168,188,158,163,193,163,178};
+        double vety[] = {79,69,70,81,61,63,79,71,73};
         
         
         vetXi = new BigDecimal[vetx.length];
@@ -102,7 +102,50 @@ public class AjusteLinear {
     
         System.out.println("B0: " + B0);
         System.out.println("B1: " + B1);
+        System.out.println("Ajuste de Curva: " + B0 + " + " + B1 + " * x");
         System.out.println("\n");
         
+        System.out.println("===============================================");
+        System.out.println("Coeficiente de Determinação:");
+        BigDecimal coeficiente = BigDecimal.ZERO;
+        BigDecimal somaYi2;
+        
+        somaYi2 = BigDecimal.ZERO;
+        System.out.println("Somatório (Yi)^2:");
+        for (int x = 0; x < vetYi.length; x++) {
+            somaYi2 = somaYi2.add((vetYi[x].pow(2)).setScale(CASA_DECIMAL, ROUND_MODE));
+            System.out.println("(y[" + x + "])^2 = " + (vetYi[x].pow(2).setScale(CASA_DECIMAL, ROUND_MODE)));
+        }
+        System.out.println("Somatório (Yi) ^ 2 = " + somaYi2);
+        System.out.println("===============================================");
+        System.out.println("\n");
+        
+        coeficiente = (somaXiYi.subtract(somaXi.multiply(somaYi.divide(N, CASA_DECIMAL_DIVISOR, ROUND_MODE)))).pow(2).
+                divide((somaXi2.subtract(somaXi.pow(2).divide(N, CASA_DECIMAL_DIVISOR, ROUND_MODE))).
+                        multiply(somaYi2.subtract(somaYi.pow(2).divide(N, CASA_DECIMAL_DIVISOR, ROUND_MODE))), CASA_DECIMAL_DIVISOR, ROUND_MODE);
+        System.out.println("\n");
+        System.out.println("Coeficiente de Determinação = R^2");
+        System.out.println("R^2 = [somaXi - somaXi*(somaYi / n)] ^ 2 / [soma(Xi^2) - (somaXi)^2 / n] * [soma(Yi^2) - (somaYi)^2 / n]");
+        System.out.println("\n");
+        System.out.println("R^2 =");
+        System.out.println("[" + somaXiYi + " - " + somaXi + " * (" + somaYi +" / " + N +")]^2");
+        System.out.println("________________________________");
+        System.out.println("[" + somaXi2 +" - ((" + somaXi +")^2 / " + N + ")] * [" + somaYi2 +" - ((" + somaYi +")^2 / " + N + ")]");
+        System.out.println("\n");
+        System.out.println("R^2 = " + coeficiente);
+        System.out.println("===============================================");
     }
+    
+    public static void calcularYAtravesDeAjuste(double valor){
+        BigDecimal bigValor = new BigDecimal(Double.toString(valor));
+        System.out.println("\n");
+        System.out.println("==============================================");
+        System.out.println("Calculando Y através do Ajuste de Curva:");
+        System.out.println("y = " + B0 + " + " + B1 + " * " + bigValor);
+        BigDecimal resultado = B0.add(B1.multiply(bigValor)).setScale(CASA_DECIMAL, ROUND_MODE);
+        System.out.println("y = " + resultado);
+        System.out.println("==============================================");
+    }
+    
+    
 }

@@ -15,7 +15,7 @@ import java.math.RoundingMode;
  */
 public class AjustePolinomial {
 
-    private static BigDecimal matXi[][];
+    private static BigDecimal vetXi[];
     private static BigDecimal vetYi[];
     private static BigDecimal vetB[];
     private static BigDecimal vetSomaYiXi[];
@@ -25,19 +25,14 @@ public class AjustePolinomial {
     private static final int CASA_DECIMAL_DIVISOR = 15;
 
     private static void criarVetoresBigDecimal() {
-        double matx[][] = {
-            {-1, 0, 1, 2, 4, 5, 5, 6},
-            {-2, -1, 0, 1, 1, 2, 3, 4}
-        };
-        double vety[] = {13, 11, 9, 4, 11, 9, 1, -1};
+        double vetx[] = {-5,-4,-2,0,1,2,3,5};
+        double vety[] = {386,255,54,6,13,40,110,220};
 
-        matXi = new BigDecimal[matx.length][matx[0].length];
+        vetXi = new BigDecimal[vetx.length];
         vetYi = new BigDecimal[vety.length];
 
-        for (int l = 0; l < matXi.length; l++) {
-            for (int c = 0; c < matXi[0].length; c++) {
-                matXi[l][c] = new BigDecimal(Double.toString(matx[l][c])).setScale(CASA_DECIMAL, ROUND_MODE);
-            }
+        for (int l = 0; l < vetXi.length; l++) {
+            vetXi[l] = new BigDecimal(Double.toString(vetx[l])).setScale(CASA_DECIMAL, ROUND_MODE);
         }
 
         for (int x = 0; x < vetYi.length; x++) {
@@ -45,33 +40,31 @@ public class AjustePolinomial {
         }
     }
 
-    public static void calcularVetorBeta() {
+    public static void calcularVetorBeta(int p) {
         criarVetoresBigDecimal();
-        calcularB();
+        calcularB(p);
         calcularCoeficienteDeDeterminacao();
     }
 
-    private static void calcularB() {
-        int n = matXi[0].length;
+    private static void calcularB(int p) {
+        int n = vetXi.length;
         BigDecimal somaXiP;
         BigDecimal somaYi;
         BigDecimal somaXiPYi;
-        BigDecimal matRes[][] = new BigDecimal[matXi.length + 1][matXi.length + 1];
+        BigDecimal matRes[][] = new BigDecimal[p + 1][p + 1];
         BigDecimal N = new BigDecimal(n).setScale(CASA_DECIMAL, ROUND_MODE);
 
         for (int lr = 0; lr < matRes.length; lr++) {
             for (int cr = 0; cr < matRes[0].length; cr++) {
-                if(lr == 0 && cr == 0){
-                    matRes[lr][cr] = N;
-                }else if (lr <= cr) {
+                if (lr <= cr) {
                     somaXiP = BigDecimal.ZERO;
-                        for (int c = 0; c < matXi[0].length; c++) {
-                            somaXiP = somaXiP.add((matXi[cr -1 ][c].pow(cr))).setScale(CASA_DECIMAL, ROUND_MODE);
-                            System.out.println("\n");
-                            System.out.println("x[" + (cr - 1)  + "][" + c + "] = " + (matXi[cr - 1][c]).setScale(CASA_DECIMAL, ROUND_MODE));
-                            System.out.println("x[" + (cr - 1) + "][" + c + "] ^ (" + cr + ") = " + (matXi[cr - 1][c]).pow(cr).setScale(CASA_DECIMAL, ROUND_MODE));
-                            System.out.println("Soma x[" + (cr - 1 ) + "] ^ (" + cr +") = " + somaXiP);
-                        }
+                    for (int c = 0; c < vetXi.length; c++) {
+                        somaXiP = somaXiP.add((vetXi[c].pow(cr + lr))).setScale(CASA_DECIMAL, ROUND_MODE);
+                        System.out.println("\n");
+                        System.out.println("x[" + c + "] = " + (vetXi[c]).setScale(CASA_DECIMAL, ROUND_MODE));
+                        System.out.println("x[" + c + "] ^ (" + (cr + lr) + ") = " + (vetXi[c]).pow(cr + lr).setScale(CASA_DECIMAL, ROUND_MODE));
+                        System.out.println("Soma x[" + (c) + "] ^ (" + (cr + lr) + ") = " + somaXiP);
+                    }
                     matRes[lr][cr] = somaXiP;
                     System.out.println("====================");
                 }
@@ -107,24 +100,26 @@ public class AjustePolinomial {
         System.out.println("====================");
         System.out.println("\n");
 
-        vetSomaYiXi = new BigDecimal[matXi.length + 1];
-        vetSomaYiXi[0] = somaYi;
+        vetSomaYiXi = new BigDecimal[matRes.length];
+        vetSomaYiXi[0] = BigDecimal.ZERO;
 
         somaXiPYi = BigDecimal.ZERO;
         System.out.println("Somatório Xi^(P) * Yi:");
-        for (int l = 0; l < matXi.length; l++) {
-            for (int c = 0; c < matXi[0].length; c++) {
-                somaXiPYi = somaXiPYi.add(matXi[l][c].multiply(vetYi[c])).setScale(CASA_DECIMAL, ROUND_MODE);
+
+        for (int y = 0; y < vetSomaYiXi.length; y++) {
+            for (int l = 0; l < vetXi.length; l++) {
+                somaXiPYi = somaXiPYi.add(vetXi[l].pow(y).multiply(vetYi[l])).setScale(CASA_DECIMAL, ROUND_MODE);
                 System.out.println("\n");
-                System.out.println("x[" + l + "][" + c + "] = " + matXi[l][c]);
-                System.out.println("y[" + c + "] = " + vetYi[c]);
-                System.out.println("x[" + l + "][" + c + "] * y[" + c + "] = " + matXi[l][c].multiply(vetYi[c]).setScale(CASA_DECIMAL, ROUND_MODE));
-                System.out.println("Soma x[" + l + "] * y[" + c + "] = " + somaXiPYi);
+                System.out.println("x[" + l + "] = " + vetXi[l]);
+                System.out.println("y[" + l + "] = " + vetYi[l]);
+                System.out.println("x[" + l + "]^(" + y + ") * y[" + l + "] = " + vetXi[l].pow(y).multiply(vetYi[l]).setScale(CASA_DECIMAL, ROUND_MODE));
+                System.out.println("Soma x[" + l + "] * y[" + l + "] = " + somaXiPYi);
 
             }
-            vetSomaYiXi[l + 1] = somaXiPYi;
+            vetSomaYiXi[y] = somaXiPYi;
             somaXiPYi = BigDecimal.ZERO;
             System.out.println("====================");
+
         }
 
         System.out.println("Vetor de Somatórios Y:");
@@ -168,27 +163,31 @@ public class AjustePolinomial {
     }
 
     public static void calcularCoeficienteDeDeterminacao() {
-        BigDecimal N = new BigDecimal(matXi[0].length);
-        BigDecimal vetRi[] = new BigDecimal[matXi[0].length];
+        BigDecimal N = new BigDecimal(vetXi.length);
+        BigDecimal vetRi[] = new BigDecimal[vetXi.length];
         BigDecimal somaYiRi2;
         BigDecimal somaYi2;
         BigDecimal somaYi;
-        BigDecimal somaRi = vetB[0];
+        BigDecimal somaRi = BigDecimal.ZERO;
         System.out.println("\n");
         System.out.println("Coeficiente de Determinação:");
-        for (int c = 0; c < matXi[0].length; c++) {
-            for (int l = 0; l < matXi.length; l++) {
-                somaRi = somaRi.add(vetB[l + 1].multiply(matXi[l][c])).setScale(CASA_DECIMAL, ROUND_MODE);
+
+        for (int l = 0; l < vetXi.length; l++) {
+            for (int b = 0; b < vetB.length; b++) {
+                somaRi = somaRi.add(vetB[b].multiply(vetXi[l]).pow(b)).setScale(CASA_DECIMAL, ROUND_MODE);
                 System.out.println("\n");
-                System.out.println("B[" + (l + 1) + "] = " + vetB[l + 1]);
-                System.out.println("x[" + l + "][" + c + "] = " + matXi[l][c]);
-                System.out.println("B[" + (l + 1) + "] * x[" + l + "][" + c + "] = " + vetB[l + 1].multiply(matXi[l][c]).setScale(CASA_DECIMAL, ROUND_MODE));
+                System.out.println("B[" + (b) + "] = " + vetB[b]);
+                System.out.println("x[" + l + "] = " + vetXi[l]);
+                System.out.println("x[" + l + "]^(" + b + ") = " + vetXi[l].pow(b).setScale(CASA_DECIMAL, ROUND_MODE));
+                System.out.println("B[" + b + "] * x[" + l + "]^(" + b + ") = " + vetB[b].multiply(vetXi[l]).pow(b).setScale(CASA_DECIMAL, ROUND_MODE));
             }
-            vetRi[c] = somaRi;
-            System.out.println("^y[" + c + "] = " + somaRi);
-            somaRi = vetB[0];
+            vetRi[l] = somaRi;
+            System.out.println("^y[" + l + "] = " + somaRi);
+            somaRi = BigDecimal.ZERO;
             System.out.println("============================");
+
         }
+
         System.out.println("\n");
         System.out.println("===============================================");
         System.out.println("Vetor ^Yi:");
@@ -215,7 +214,7 @@ public class AjustePolinomial {
             somaYi2 = somaYi2.add((vetYi[x].pow(2)).setScale(CASA_DECIMAL, ROUND_MODE));
             System.out.println("(y[" + x + "])^2 = " + (vetYi[x].pow(2).setScale(CASA_DECIMAL, ROUND_MODE)));
         }
-        System.out.println("Somatório (Yi) ^ 2 = " + somaYiRi2);
+        System.out.println("Somatório (Yi) ^ 2 = " + somaYi2);
         System.out.println("===============================================");
         System.out.println("\n");
 
@@ -236,13 +235,13 @@ public class AjustePolinomial {
                                 CASA_DECIMAL_DIVISOR, ROUND_MODE));
         System.out.println("R^2 = " + coeficiente);
     }
-    
-    public static void calcularYcomAjusteDeCurva(double valor){
+
+    public static void calcularYcomAjusteDeCurva(double valor) {
         BigDecimal bigValor = new BigDecimal(Double.toString(valor));
         System.out.println("\n");
         System.out.println("Resultado do calculo para x = " + bigValor + ":");
         BigDecimal resultado = BigDecimal.ZERO;
-         for (int x = 0; x < vetB.length; x++) {
+        for (int x = 0; x < vetB.length; x++) {
             System.out.print("+ (" + vetB[x] + ") * " + bigValor + " ^(" + x + ") ");
             resultado = resultado.add(vetB[x].multiply(bigValor.pow(x))).setScale(CASA_DECIMAL, ROUND_MODE);
         }
