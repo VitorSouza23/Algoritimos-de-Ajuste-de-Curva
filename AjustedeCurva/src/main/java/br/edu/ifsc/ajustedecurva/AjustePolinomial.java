@@ -174,12 +174,12 @@ public class AjustePolinomial {
 
         for (int l = 0; l < vetXi.length; l++) {
             for (int b = 0; b < vetB.length; b++) {
-                somaRi = somaRi.add(vetB[b].multiply(vetXi[l]).pow(b)).setScale(CASA_DECIMAL, ROUND_MODE);
+                somaRi = somaRi.add(vetB[b].multiply(vetXi[l].pow(b))).setScale(CASA_DECIMAL, ROUND_MODE);
                 System.out.println("\n");
                 System.out.println("B[" + (b) + "] = " + vetB[b]);
                 System.out.println("x[" + l + "] = " + vetXi[l]);
                 System.out.println("x[" + l + "]^(" + b + ") = " + vetXi[l].pow(b).setScale(CASA_DECIMAL, ROUND_MODE));
-                System.out.println("B[" + b + "] * x[" + l + "]^(" + b + ") = " + vetB[b].multiply(vetXi[l]).pow(b).setScale(CASA_DECIMAL, ROUND_MODE));
+                System.out.println("B[" + b + "] * x[" + l + "]^(" + b + ") = " + vetB[b].multiply(vetXi[l].pow(b)).setScale(CASA_DECIMAL, ROUND_MODE));
             }
             vetRi[l] = somaRi;
             System.out.println("^y[" + l + "] = " + somaRi);

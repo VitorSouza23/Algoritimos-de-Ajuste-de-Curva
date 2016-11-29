@@ -23,8 +23,8 @@ public class AjusteLinear {
     private static final int CASA_DECIMAL_DIVISOR = 15;
     
     private static void criarVetoresBigDecimal(){
-        double vetx[] = {183,173,168,188,158,163,193,163,178};
-        double vety[] = {79,69,70,81,61,63,79,71,73};
+        double vetx[] = {0.005, 0.1, 0.15, 0.2, 0.25, 0.3};
+        double vety[] = {-0.1508,-0.3856,-0.5276,0.755, -0.8439, -0.9675};
         
         
         vetXi = new BigDecimal[vetx.length];
